@@ -1,0 +1,78 @@
+.container {
+  min-height: 100vh;
+  background: #f5f6fa;
+  transition: 0.3s;
+}
+
+.dark {
+  background: #121212;
+  color: white;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 35px;
+  background: #6c63ff;
+  color: white;
+}
+
+.dark .navbar {
+  background: #1f1f1f;
+}
+
+.navbar h2 {
+  font-size: 24px;
+}
+
+.rightSide {
+  display: flex;
+  gap: 12px;
+}
+
+.themeBtn {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background: white;
+  color: #6c63ff;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.logoutBtn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #ff4d4f;
+  color: white;
+  cursor: pointer;
+  font-size: 15px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.logoutBtn:hover {
+  background: #e63946;
+}
+
+.content {
+  padding: 50px;
+  text-align: center;
+}
+
+.content h1 {
+  font-size: 38px;
+  margin-bottom: 10px;
+}
+
+.content p {
+  font-size: 18px;
+  color: gray;
+}
+
+.dark .content p {
+  color: #ccc;
+}

@@ -1,0 +1,89 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+.container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  font-family: Arial;
+}
+
+.card {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 360px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.inputBox {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 8px;
+  gap: 10px;
+}
+
+.inputBox input {
+  border: none;
+  outline: none;
+  width: 100%;
+}
+
+.btn {
+  width: 100%;
+  padding: 10px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #5a67d8;
+}
+
+.messageWeak {
+  color: red;
+  font-size: 12px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
+
+.messageStrong {
+  color: green;
+  font-size: 12px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
+
+.toggle {
+  cursor: pointer;
+}
+
+.loginBtn {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 8px;
+  background: #28a745;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+.loginBtn:hover {
+  background: #218838;
+}
