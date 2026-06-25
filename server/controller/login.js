@@ -1,4 +1,3 @@
-
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../modal/schema");
@@ -9,53 +8,70 @@ async function login(req, res) {
 
         if (!email || !password) {
             return res.status(400).json({
-                message: "please provide email and password"
+                success: false,
+                message: "Please provide email and password",
             });
         }
 
         const user = await User.findOne({ email });
+
         if (!user) {
             return res.status(400).json({
-                message: "wrong email"
+                success: false,
+                message: "Wrong email",
             });
         }
 
         const passmatch = await bcrypt.compare(password, user.password);
+
         if (!passmatch) {
             return res.status(400).json({
-                message: "Wrong password"
+                success: false,
+                message: "Wrong password",
             });
         }
 
         if (!process.env.JWT_SECRET) {
             return res.status(500).json({
-                message: "JWT secret is missing"
+                success: false,
+                message: "JWT secret is missing",
             });
         }
 
         const token = jwt.sign(
-            { id: user._id, email: user.email },
+            {
+                id: user._id,
+                email: user.email,
+            },
             process.env.JWT_SECRET,
-            { expiresIn: "24h" }
+            {
+                expiresIn: process.env.JWT_EXPIRES_IN || "24h",
+            }
         );
 
         res.cookie("authToken", token, {
             httpOnly: true,
             secure: true,
-            sameSite: 'lax',
+            sameSite: "none",
             path: "/",
             maxAge: 24 * 60 * 60 * 1000,
         });
 
-
         return res.status(200).json({
-            message: "Login successful"
+            success: true,
+            message: "Login successful",
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+            },
         });
-
     } catch (error) {
-        console.log("login error:", error);
+        console.log("Login error:", error.message);
+
         return res.status(500).json({
-            message: "server error: " + error.message
+            success: false,
+            message: "Server error: " + error.message,
         });
     }
 }

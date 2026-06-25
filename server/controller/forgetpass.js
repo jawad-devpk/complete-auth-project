@@ -1,16 +1,6 @@
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
-const User = require('../modal/schema');
-
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT) || 465,
-    secure: Number(process.env.SMTP_PORT) === 465,
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-    }
-});
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
+const User = require("../modal/schema");
 
 async function forgetPassword(req, res) {
     try {
@@ -18,56 +8,74 @@ async function forgetPassword(req, res) {
 
         if (!email) {
             return res.status(400).json({
-                message: "please provide email"
+                success: false,
+                message: "Please provide email",
             });
         }
 
-        if (!process.env.SMTP_HOST || !process.env.SMTP_PORT || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+        if (
+            !process.env.SMTP_HOST ||
+            !process.env.SMTP_PORT ||
+            !process.env.SMTP_USER ||
+            !process.env.SMTP_PASS
+        ) {
             return res.status(500).json({
-                message: "email configuration is missing"
+                success: false,
+                message: "Email configuration is missing",
             });
         }
 
         const user = await User.findOne({ email });
+
         if (!user) {
             return res.status(400).json({
-                message: "Email not registered"
+                success: false,
+                message: "Email not registered",
             });
         }
 
-
         const otp = crypto.randomInt(100000, 1000000).toString();
-        user.resetOTP = otp;
-        // user.resetOTPExpiry = new Date(Date.now() + 10 * 60 * 1000);
 
-        user.resetOTPExpiry = new Date(Date.now() + 1 * 60 * 1000);
+        user.resetOTP = otp;
+        user.resetOTPExpiry = new Date(Date.now() + 10 * 60 * 1000);
 
         await user.save();
 
-        const mailOptions = {
+        const transporter = nodemailer.createTransport({
+            host: process.env.SMTP_HOST,
+            port: Number(process.env.SMTP_PORT),
+            secure: Number(process.env.SMTP_PORT) === 465,
+            auth: {
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_PASS,
+            },
+        });
+
+        await transporter.sendMail({
             from: process.env.FROM_EMAIL || process.env.SMTP_USER,
             to: email,
             subject: "Password Reset OTP",
-            text: `Your OTP for password reset is ${otp}. It will expire in 10 minutes.`
-        };
-
-        try {
-            await transporter.sendMail(mailOptions);
-        } catch (error) {
-
-            user.resetOTP = undefined;
-            user.resetOTPExpiry = undefined;
-            await user.save();
-            throw error;
-        }
+            text: `Your OTP for password reset is ${otp}. It will expire in 10 minutes.`,
+            html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px;">
+          <h2>Password Reset OTP</h2>
+          <p>Your OTP for password reset is:</p>
+          <h1 style="letter-spacing: 4px;">${otp}</h1>
+          <p>This OTP will expire in 10 minutes.</p>
+        </div>
+      `,
+        });
 
         return res.status(200).json({
-            message: "OTP sent to your email"
+            success: true,
+            message: "OTP sent to your email",
         });
     } catch (error) {
-        console.log("forgot password error:", error);
+        console.log("Forgot password error:", error.message);
+
         return res.status(500).json({
-            message: "Email could not be sent"
+            success: false,
+            message: "Email could not be sent",
         });
     }
 }
