@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -73,7 +72,8 @@ const Signup = () => {
       };
 
       const res = await axios.post(
-        "http://127.0.0.1:5000/api/signup",
+        // "http://127.0.0.1:5000/api/signup",
+        `${import.meta.env.VITE_API_BASE_URL}/api/signup`,
         userData,
       );
 

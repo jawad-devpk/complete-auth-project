@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -19,9 +17,18 @@ const ForgotPassword = () => {
     try {
       setLoading(true);
 
-      await axios.post("http://localhost:5000/api/forgot-password", {
-        email,
-      });
+      // await axios.post("http://localhost:5000/api/forgot-password", {
+      //   email,
+      // });
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/forgot-password`,
+        {
+          email,
+        },
+        {
+          withCredentials: true,
+        },
+      );
 
       toast.success("OTP Sent Successfully!");
 

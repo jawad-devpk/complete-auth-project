@@ -36,10 +36,15 @@ const VerifyOTP = () => {
     try {
       setLoading(true);
 
-      await axios.post("http://localhost:5000/api/verify-otp", {
-        email,
-        otp,
-      });
+      // await axios.post("http://localhost:5000/api/verify-otp", {
+      //   email,
+      //   otp,
+      // });
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/logout`,
+        { email, otp },
+        { withCredentials: true },
+      );
 
       toast.success("OTP Verified");
 
@@ -55,9 +60,18 @@ const VerifyOTP = () => {
 
   const resendOTP = async () => {
     try {
-      await axios.post("http://localhost:5000/api/forgot-password", {
-        email,
-      });
+      // await axios.post("http://localhost:5000/api/forgot-password", {
+      //   email,
+      // });
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/forgot-password`,
+        {
+          email,
+        },
+        {
+          withCredentials: true,
+        },
+      );
 
       toast.success("OTP Resent");
       setSeconds(60);

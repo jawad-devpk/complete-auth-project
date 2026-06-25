@@ -33,9 +33,16 @@ const Login = () => {
     try {
       setLoading(true);
 
-      await axios.post("http://localhost:5000/api/login", loginData, {
-        withCredentials: true,
-      });
+      // await axios.post("http://localhost:5000/api/login", loginData, {
+      //   withCredentials: true,
+      // });
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/login`,
+        loginData,
+        {
+          withCredentials: true,
+        },
+      );
 
       toast.success("Login Successful!");
       navigate("/dashboard");
@@ -52,9 +59,14 @@ const Login = () => {
     try {
       setOtpLoading(true);
 
-      await axios.post("http://localhost:5000/api/forgot-password", {
-        email: forgotEmail,
-      });
+  
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/login`,
+        loginData,
+        {
+          withCredentials: true,
+        },
+      );
 
       toast.success("OTP sent to your Email");
 
