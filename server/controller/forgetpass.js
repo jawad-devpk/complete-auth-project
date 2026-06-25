@@ -13,12 +13,7 @@ async function forgetPassword(req, res) {
             });
         }
 
-        if (
-            !process.env.SMTP_HOST ||
-            !process.env.SMTP_PORT ||
-            !process.env.SMTP_USER ||
-            !process.env.SMTP_PASS
-        ) {
+        if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
             return res.status(500).json({
                 success: false,
                 message: "Email configuration is missing",
@@ -42,17 +37,18 @@ async function forgetPassword(req, res) {
         await user.save();
 
         const transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: Number(process.env.SMTP_PORT),
-            secure: Number(process.env.SMTP_PORT) === 465,
+            service: "gmail",
             auth: {
                 user: process.env.SMTP_USER,
                 pass: process.env.SMTP_PASS,
             },
+            connectionTimeout: 30000,
+            greetingTimeout: 30000,
+            socketTimeout: 30000,
         });
 
         await transporter.sendMail({
-            from: process.env.FROM_EMAIL || process.env.SMTP_USER,
+            from: `"Complete Auth Project" <${process.env.FROM_EMAIL || process.env.SMTP_USER}>`,
             to: email,
             subject: "Password Reset OTP",
             text: `Your OTP for password reset is ${otp}. It will expire in 10 minutes.`,
@@ -75,7 +71,7 @@ async function forgetPassword(req, res) {
 
         return res.status(500).json({
             success: false,
-            message: "Email could not be sent",
+            message: "Email could not be sent: " + error.message,
         });
     }
 }
